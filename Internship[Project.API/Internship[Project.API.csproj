@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net9.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>Internship_Project.API</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="9.0.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\InternshipProject.Application\InternshipProject.Application.csproj" />
+    <ProjectReference Include="..\InternshipProject.Domain\InternshipProject.Domain.csproj" />
+    <ProjectReference Include="..\InternshipProject.Infrastructure\InternshipProject.Infrastructure.csproj" />
+    <ProjectReference Include="..\InternshipProject.Tests\InternshipProject.Tests.csproj" />
+  </ItemGroup>
+
+</Project>
