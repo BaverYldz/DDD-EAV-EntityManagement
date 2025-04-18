@@ -14,8 +14,8 @@ namespace InternshipProject.Domain.Entities
         public Employee Employee { get; set; }
 
         public Guid AttributeId { get; set; }
-        public Attribute Attribute { get; set; }
 
+        public CustomAttribute CustomAttribute { get; set; }
         public string Value { get; set; }
 
     }

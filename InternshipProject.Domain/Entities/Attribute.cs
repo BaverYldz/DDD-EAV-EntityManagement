@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace InternshipProject.Domain.Entities
 {
-    public class Attribute
+    public class CustomAttribute
     {
         public Guid Id { get; set; } = Guid.NewGuid();
         public string Name { get; set; }

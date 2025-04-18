@@ -13,8 +13,9 @@ namespace InternshipProject.Infrastructure.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
+       
         public DbSet<Employee> Employees { get; set; }
-        public DbSet<Domain.Entities.Attribute> Attributes { get; set; }
+        public DbSet<CustomAttribute> CustomAttributes { get; set; }  
         public DbSet<AttributeValue> AttributeValues { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -28,7 +29,7 @@ namespace InternshipProject.Infrastructure.Data
                 .HasForeignKey(av => av.EmployeeId);
 
             modelBuilder.Entity<AttributeValue>()
-                .HasOne(av => av.Attribute)
+                .HasOne(av => av.CustomAttribute)
                 .WithMany(a => a.AttributeValues)
                 .HasForeignKey(av => av.AttributeId);
         }
