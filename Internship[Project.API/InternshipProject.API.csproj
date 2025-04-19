@@ -14,6 +14,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="9.0.4" />
+    <PackageReference Include="Scalar.AspNetCore" Version="2.1.17" />
   </ItemGroup>
 
   <ItemGroup>
@@ -21,10 +22,6 @@
     <ProjectReference Include="..\InternshipProject.Domain\InternshipProject.Domain.csproj" />
     <ProjectReference Include="..\InternshipProject.Infrastructure\InternshipProject.Infrastructure.csproj" />
     <ProjectReference Include="..\InternshipProject.Tests\InternshipProject.Tests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Controllers\" />
   </ItemGroup>
 
 </Project>
