@@ -25,7 +25,7 @@ namespace InternshipProject.API.Controllers
             return await _context.CustomAttributes.ToListAsync();
         }
 
-        //GET : api/CustomAttribute/5
+        //GET : api/CustomAttribute/id
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomAttribute>> GetCustomAttribute(Guid id)
         {
@@ -50,6 +50,61 @@ namespace InternshipProject.API.Controllers
             return CreatedAtAction(nameof(GetCustomAttribute) , new {id  = customAttribute.Id}, customAttribute);
         }
 
+
+
+        //PUT api/CustomAttribute/id
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutCustomAttribute(Guid id, CustomAttribute customAttribute)
+        {
+            if (id != customAttribute.Id)
+            {
+                return BadRequest();
+            }
+
+            _context.Entry(customAttribute).State = EntityState.Modified;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!CustomAttributeExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+
+
+            }
+            return NoContent();
+        }
+
+        private bool CustomAttributeExists(Guid id)
+        {
+            return _context.CustomAttributes.Any(e => e.Id == id);
+        }
+
+
+        //DELETE api/CustomAttribute/id
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteCustomAttribute(Guid id)
+        {
+            var customAttribute = await _context.CustomAttributes.FindAsync(id);
+            if (customAttribute != null)
+            {
+                return NotFound();
+            }
+
+            _context.CustomAttributes.Remove(customAttribute);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
 
 
     }
