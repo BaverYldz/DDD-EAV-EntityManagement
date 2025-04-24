@@ -44,6 +44,11 @@ namespace InternshipProject.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.Employees.Add(employee);
             await _context.SaveChangesAsync();
 

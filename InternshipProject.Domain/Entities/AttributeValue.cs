@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -16,6 +17,8 @@ namespace InternshipProject.Domain.Entities
         public Guid AttributeId { get; set; }
 
         public CustomAttribute CustomAttribute { get; set; }
+
+        [Required(ErrorMessage = "Value is required.")]
         public string Value { get; set; }
 
     }

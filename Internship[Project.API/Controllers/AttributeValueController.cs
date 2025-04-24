@@ -33,6 +33,11 @@ namespace InternshipProject.API.Controllers
         [HttpPost]
         public async Task<ActionResult<AttributeValue>> PostAttributeValue(AttributeValue attributeValue)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.AttributeValues.Add(attributeValue);
             await _context.SaveChangesAsync();
 

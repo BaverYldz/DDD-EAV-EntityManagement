@@ -44,6 +44,11 @@ namespace InternshipProject.API.Controllers
         [HttpPost]
         public async Task<ActionResult<CustomAttribute>> PostCustomAttribute(CustomAttribute customAttribute)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
             _context.CustomAttributes.Add(customAttribute);
             await _context.SaveChangesAsync();
 
@@ -56,6 +61,12 @@ namespace InternshipProject.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomAttribute(Guid id, CustomAttribute customAttribute)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+
             if (id != customAttribute.Id)
             {
                 return BadRequest();
