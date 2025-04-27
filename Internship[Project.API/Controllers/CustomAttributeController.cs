@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InternshipProject.Domain.Entities;
 using InternshipProject.Infrastructure.Data;
+using InternshipProject.Application.Interfaces;
 
 namespace InternshipProject.API.Controllers
 {
@@ -10,26 +11,28 @@ namespace InternshipProject.API.Controllers
     [ApiController]
     public class CustomAttributeController : ControllerBase
     {
-        private readonly AppDbContext _context;
+ 
+        private readonly ICustomAttributeService _customAttributeService;
 
-        public CustomAttributeController(AppDbContext context)
-        { 
-            _context = context;
+        public CustomAttributeController(ICustomAttributeService customAttributeService)
+        {
+            _customAttributeService = customAttributeService;
         }
-        
+
 
         //GET : api/CustomAttribute
         [HttpGet]
         public async Task<ActionResult<IEnumerable<CustomAttribute>>> GetCustomAttributes()
         {
-            return await _context.CustomAttributes.ToListAsync();
+            var customAttributes = await _customAttributeService.GetAllAsync();
+            return Ok(customAttributes);
         }
 
         //GET : api/CustomAttribute/id
         [HttpGet("{id}")]
         public async Task<ActionResult<CustomAttribute>> GetCustomAttribute(Guid id)
         {
-            var customAttribute = await _context.CustomAttributes.FindAsync(id);
+            var customAttribute = await _customAttributeService.GetByIdAsync(id);
 
             if (customAttribute == null)
             {
@@ -44,15 +47,8 @@ namespace InternshipProject.API.Controllers
         [HttpPost]
         public async Task<ActionResult<CustomAttribute>> PostCustomAttribute(CustomAttribute customAttribute)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-            _context.CustomAttributes.Add(customAttribute);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction(nameof(GetCustomAttribute) , new {id  = customAttribute.Id}, customAttribute);
+           var createdCustomAttribute = await _customAttributeService.CreateAsync(customAttribute);
+            return CreatedAtAction(nameof(GetCustomAttribute), new { id = createdCustomAttribute.Id }, createdCustomAttribute);
         }
 
 
@@ -61,58 +57,27 @@ namespace InternshipProject.API.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutCustomAttribute(Guid id, CustomAttribute customAttribute)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
-
-            if (id != customAttribute.Id)
+            var updated = await _customAttributeService.UpdateAsync(id, customAttribute);
+            if(!updated)
             {
                 return BadRequest();
             }
 
-            _context.Entry(customAttribute).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!CustomAttributeExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-
-
-            }
             return NoContent();
         }
 
-        private bool CustomAttributeExists(Guid id)
-        {
-            return _context.CustomAttributes.Any(e => e.Id == id);
-        }
+        
 
 
         //DELETE api/CustomAttribute/id
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCustomAttribute(Guid id)
         {
-            var customAttribute = await _context.CustomAttributes.FindAsync(id);
-            if (customAttribute != null)
+            var deleted = await _customAttributeService.DeleteAsync(id);
+            if(!deleted)
             {
                 return NotFound();
             }
-
-            _context.CustomAttributes.Remove(customAttribute);
-            await _context.SaveChangesAsync();
 
             return NoContent();
         }

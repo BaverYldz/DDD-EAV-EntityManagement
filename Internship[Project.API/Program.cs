@@ -1,3 +1,5 @@
+using InternshipProject.Application.Interfaces;
+using InternshipProject.Application.Services;
 using InternshipProject.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Scalar.AspNetCore;
@@ -11,6 +13,13 @@ builder.Services.AddOpenApi();
 // Inject DbContext using the connection string from configuration
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
+//Services
+builder.Services.AddScoped<ICustomAttributeService, CustomAttributeService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IAttributeValueService, AttributeValueService>();
+
 
 builder.Services.AddControllers()
     .AddJsonOptions(options =>

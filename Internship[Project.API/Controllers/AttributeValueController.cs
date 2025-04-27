@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InternshipProject.Domain.Entities;
 using InternshipProject.Infrastructure.Data;
+using InternshipProject.Application.Interfaces;
 
 namespace InternshipProject.API.Controllers
 {
@@ -10,11 +11,11 @@ namespace InternshipProject.API.Controllers
     [ApiController]
     public class AttributeValueController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IAttributeValueService _attributeValueService;
 
-        public AttributeValueController(AppDbContext context)
+        public AttributeValueController(IAttributeValueService attributeValueService)
         {
-            _context = context;
+            _attributeValueService = attributeValueService;
         }
 
 
@@ -22,10 +23,19 @@ namespace InternshipProject.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<AttributeValue>>> GetAttributeValue()
         {
-            return await _context.AttributeValues
-                .Include(av => av.Employee)
-                .Include(av => av.CustomAttribute)
-                .ToListAsync();
+            var attributeValues = await _attributeValueService.GetAllAsync();
+            return Ok(attributeValues);
+        }
+
+
+        //GET By Id
+        [HttpGet("{id}")]
+        public async Task<ActionResult<AttributeValue>> GetAttributeValue(Guid id)
+        {
+            var attributeValue = await _attributeValueService.GetByIdAsync(id);
+            if (attributeValue == null)
+                return NotFound();
+            return Ok(attributeValue);
         }
 
 
@@ -33,15 +43,30 @@ namespace InternshipProject.API.Controllers
         [HttpPost]
         public async Task<ActionResult<AttributeValue>> PostAttributeValue(AttributeValue attributeValue)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
+            var created = await _attributeValueService.CreateAsync(attributeValue);
+            return CreatedAtAction(nameof(GetAttributeValue), new { id = created.Id }, created);
+        }
 
-            _context.AttributeValues.Add(attributeValue);
-            await _context.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(GetAttributeValue), new { id = attributeValue.Id }, attributeValue);
+        //PUT
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutAttributeValue(Guid id, AttributeValue attributeValue)
+        {
+            var result = await _attributeValueService.UpdateAsync(id, attributeValue);
+            if (!result)
+                return BadRequest();
+            return NoContent();
+        }
+
+
+        //DELETE
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteAttributeValue(Guid id)
+        {
+            var result = await _attributeValueService.DeleteAsync(id);
+            if (!result)
+                return NotFound();
+            return NoContent();
         }
     }
 }

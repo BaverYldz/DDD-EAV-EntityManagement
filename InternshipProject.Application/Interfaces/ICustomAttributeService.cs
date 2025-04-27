@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection.Metadata;
 using System.Text;
 using System.Threading.Tasks;
+using InternshipProject.Domain.Entities;
 
-namespace InternshipProject.Application.Services
+
+namespace InternshipProject.Application.Interfaces
 {
     public interface ICustomAttributeService
     {

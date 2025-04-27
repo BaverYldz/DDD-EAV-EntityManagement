@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using InternshipProject.Domain.Entities;
 using InternshipProject.Infrastructure.Data;
+using InternshipProject.Application.Interfaces;
+
 
 namespace InternshipProject.API.Controllers
 {
@@ -10,11 +12,11 @@ namespace InternshipProject.API.Controllers
     [ApiController]
     public class EmployeeController : ControllerBase
     {
-        private readonly AppDbContext _context;
+        private readonly IEmployeeService _employeeService;
 
-        public EmployeeController(AppDbContext context)
+        public EmployeeController(IEmployeeService employeeService)
         {
-            _context = context;
+            _employeeService = employeeService;
         }
 
 
@@ -22,38 +24,60 @@ namespace InternshipProject.API.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
         {
-            return await _context.Employees.ToListAsync();
+           var employees = await _employeeService.GetAllAsync();
+            return Ok(employees);
         }
 
 
         //GET by Id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetEmployee(Guid id)
+        public async Task<ActionResult<Employee>> GetById(Guid id)
         {
-            var employee = await _context.Employees.FindAsync(id);
+            var employee = await _employeeService.GetByIdAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
-
             return Ok(employee);
         }
 
 
         //POST
         [HttpPost]
-        public async Task<ActionResult<Employee>> PostEmployee(Employee employee)
+        public async Task<ActionResult<Employee>> Create(Employee employee)
         {
-            if (!ModelState.IsValid)
+            var createdEmployee = await _employeeService.CreateAsync(employee);
+            return CreatedAtAction(nameof(GetById), new { id = createdEmployee.Id }, createdEmployee);
+
+        }
+
+        // PUT api/employee/{id}
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, Employee employee)
+        {
+            if (id != employee.Id)
             {
-                return BadRequest(ModelState);
+                return BadRequest();
             }
 
-            _context.Employees.Add(employee);
-            await _context.SaveChangesAsync();
+            var result = await _employeeService.UpdateAsync(id, employee);
+            if (result)
+            {
+                return NoContent();
+            }
+            return NotFound();
+        }
 
-            return CreatedAtAction(nameof(GetEmployee), new { id = employee.Id }, employee);
-
+        // DELETE api/employee/{id}
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var result = await _employeeService.DeleteAsync(id);
+            if (result)
+            {
+                return NoContent();
+            }
+            return NotFound();
         }
     }
 }

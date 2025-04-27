@@ -1,7 +1,7 @@
 ﻿using InternshipProject.Infrastructure.Data;
-using System;
-using System.Reflection.Metadata;
-
+using Microsoft.EntityFrameworkCore;
+using InternshipProject.Domain.Entities;
+using InternshipProject.Application.Interfaces;
 
 namespace InternshipProject.Application.Services
 {
@@ -11,32 +11,49 @@ namespace InternshipProject.Application.Services
 
         public CustomAttributeService(AppDbContext context)
         {
-            _context = context ?? throw new ArgumentNullException(nameof(context));
+            _context = context;
         }
 
-        public Task<CustomAttribute> CreateAsync(CustomAttribute customAttribute)
+        public async Task<List<CustomAttribute>> GetAllAsync()
         {
-            throw new NotImplementedException();
+            return await _context.CustomAttributes.ToListAsync();
         }
 
-        public Task<bool> DeleteAsync(Guid id)
+        public async Task<CustomAttribute> GetByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return await _context.CustomAttributes.FindAsync(id);
         }
 
-        public Task<List<CustomAttribute>> GetAllAsync()
+        public async Task<CustomAttribute> CreateAsync(CustomAttribute customAttribute)
         {
-            throw new NotImplementedException();
+            _context.CustomAttributes.Add(customAttribute);
+            await _context.SaveChangesAsync();
+            return customAttribute;
         }
 
-        public Task<CustomAttribute> GetByIdAsync(Guid id)
+        public async Task<bool> UpdateAsync(Guid id, CustomAttribute customAttribute)
         {
-            throw new NotImplementedException();
+            if (id != customAttribute.Id)
+            {
+                return false;
+            }
+
+            _context.Entry(customAttribute).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        public Task<bool> UpdateAsync(Guid id, CustomAttribute customAttribute)
+        public async Task<bool> DeleteAsync(Guid id)
         {
-            throw new NotImplementedException();
+            var customAttribute = await _context.CustomAttributes.FindAsync(id);
+            if (customAttribute == null)
+            {
+                return false;
+            }
+
+            _context.CustomAttributes.Remove(customAttribute);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
