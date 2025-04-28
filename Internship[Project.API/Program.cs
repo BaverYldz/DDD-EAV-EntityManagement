@@ -14,7 +14,7 @@ builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+//NOTE: Add more entity on the project
 //Services
 builder.Services.AddScoped<ICustomAttributeService, CustomAttributeService>();
 builder.Services.AddScoped<IEmployeeService, EmployeeService>();
