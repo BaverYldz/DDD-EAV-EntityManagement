@@ -22,50 +22,42 @@ namespace InternshipProject.API.Controllers
 
         //GET
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> GetEmployees()
+        public async Task<IEnumerable<Employee>> GetEmployees()
         {
            var employees = await _employeeService.GetAllAsync();
-            return Ok(employees);
+            return employees;
         }
 
 
         //GET by Id
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> GetById(Guid id)
+        public async Task<Employee> GetById(Guid id)
         {
             var employee = await _employeeService.GetByIdAsync(id);
             if (employee == null)
             {
-                return NotFound();
+                return null;
             }
-            return Ok(employee);
+            return employee;
         }
 
 
         //POST
         [HttpPost]
-        public async Task<ActionResult<Employee>> Create(Employee employee)
+        public async Task<Employee> Create(Employee employee)
         {
             var createdEmployee = await _employeeService.CreateAsync(employee);
-            return CreatedAtAction(nameof(GetById), new { id = createdEmployee.Id }, createdEmployee);
+            return createdEmployee;
 
         }
 
         // PUT api/employee/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(Guid id, Employee employee)
+        [HttpPut]
+        public async Task<Employee> Update(Employee employee)
         {
-            if (id != employee.Id)
-            {
-                return BadRequest();
-            }
-
-            var result = await _employeeService.UpdateAsync(id, employee);
-            if (result)
-            {
-                return NoContent();
-            }
-            return NotFound();
+          
+            var result = await _employeeService.UpdateAsync(employee);
+            return result;
         }
 
         // DELETE api/employee/{id}

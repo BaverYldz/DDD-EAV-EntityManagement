@@ -23,7 +23,9 @@ namespace InternshipProject.Application.Services
 
         public async Task<Employee> GetByIdAsync(Guid id)
         {
-            return await _context.Employees.FindAsync(id);
+            //Eğer employee bulunamazsa null döner
+
+            return await _context.Employees.FirstOrDefaultAsync(x => x.Id == id);
         }
 
 
@@ -34,16 +36,12 @@ namespace InternshipProject.Application.Services
             return employee;
         }
 
-        public async Task<bool> UpdateAsync(Guid id, Employee employee)
+        public async Task<Employee> UpdateAsync(Employee employee)
         {
-            if (id != employee.Id)
-            {
-                return false;
-            }
-
+           
             _context.Entry(employee).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-            return true;
+            return employee;
         }
 
 

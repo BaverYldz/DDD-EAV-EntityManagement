@@ -13,7 +13,7 @@ namespace InternshipProject.Application.Interfaces
         Task<Employee> GetByIdAsync(Guid id);
         Task<Employee> CreateAsync(Employee employee);
 
-        Task <bool> UpdateAsync(Guid id, Employee employee);    
+        Task <Employee> UpdateAsync(Employee employee);    
 
         Task <bool> DeleteAsync(Guid id);
     }
